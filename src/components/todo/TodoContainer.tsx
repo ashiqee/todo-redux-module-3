@@ -1,11 +1,12 @@
 import React from "react";
-import { Button } from "../ui/button";
-import Container from "../ui/Container";
+
 import AddTodoModal from "./AddTodoModal";
 import TodoCard from "./TodoCard";
 import TodoFilter from "./TodoFilter";
+import { useAppSelector } from "../../redux/hooks";
 
 const TodoContainer = () => {
+  const {todos}= useAppSelector((state)=>state.todos)
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -18,9 +19,10 @@ const TodoContainer = () => {
       
       <div className="bg-white p-3 space-y-3  text-center rounded-md ">
        {/* <p className="text-2xl"> There is no Todo</p> */}
-       <TodoCard/>
-      <TodoCard/>
-      <TodoCard/>
+       {todos?.map((item)=>(
+        <TodoCard key={item.id} {...item}/>
+       ))}
+      
         </div>
   
      
