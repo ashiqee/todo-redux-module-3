@@ -30,6 +30,7 @@ const AddTodoModal = () => {
         id: mathRandomString,
         title:task,
         description: description,
+        isCompleted:false,
         
       }
        dispatch(addTodo(taskDetails))
