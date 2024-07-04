@@ -10,30 +10,55 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { useAppDispatch } from "../../redux/hooks";
 import { DialogClose } from "../ui/dialog";
 import { addTodo } from "../../redux/features/todoSlice";
+import { useAddTodoMutation } from "../../redux/api/api";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 
 const AddTodoModal = () => {
 
-    const dispatch = useAppDispatch()
+  //for local state management
+    // const dispatch = useAppDispatch()
    
     const [task,setTask]= useState("");
     const [description,setDescription]= useState("");
+    const [priority,setPriority]= useState("");
 
-    const onSubmit = (e)=>{
+   
+
+    //* for server 
+    const [addTodo,{data,isLoading,isError,isSuccess}] = useAddTodoMutation();
+
+    console.log({data,isLoading,isSuccess,isError});
+    
+
+    const onSubmit = (e:FormEvent)=>{
         e.preventDefault();
         const mathRandomString = Math.random().toString(36).substring(2,7)
       const taskDetails = {
-        id: mathRandomString,
+        taskId: mathRandomString,
         title:task,
         description: description,
         isCompleted:false,
+        priority:priority
         
       }
-       dispatch(addTodo(taskDetails))
+      //! for local state management
+      //  dispatch(addTodo(taskDetails))
+
+      //for server
+      addTodo(taskDetails)
     }
 
     return (
@@ -70,6 +95,24 @@ const AddTodoModal = () => {
               onBlur = {(e)=>setDescription(e.target.value)}
               className="col-span-3"
             />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label  className="text-right">   Priority
+            </Label>
+          <Select onValueChange={(value: string) => setPriority(value)}>
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="Priority" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          <SelectLabel>Select priority</SelectLabel>
+          <SelectItem value="high">High</SelectItem>
+          <SelectItem value="medium">Medium</SelectItem>
+          <SelectItem value="low">Low</SelectItem>
+       
+        </SelectGroup>
+      </SelectContent>
+    </Select>
           </div>
         </div>
         <DialogClose asChild>
